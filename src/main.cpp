@@ -1,5 +1,9 @@
+//
+// Created by armandmgt on 9/6/18.
+//
+
 #include <iostream>
-#include "MyWindow.h"
+#include "windowManaging/MyWindow.hpp"
 
 int main() {
     MyWindow win(800, 800);

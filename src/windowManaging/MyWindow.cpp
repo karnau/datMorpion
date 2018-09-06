@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "MyWindow.h"
+#include "MyWindow.hpp"
 
 MyWindow::MyWindow(unsigned int w, unsigned int h) : sf::RenderWindow(sf::VideoMode{w, h, 32}, "Dat Morpion", sf::Style::Close) {
     setFramerateLimit(60);
@@ -11,6 +11,7 @@ MyWindow::MyWindow(unsigned int w, unsigned int h) : sf::RenderWindow(sf::VideoM
 
 void MyWindow::run() {
     Player turn{Player::CIRCLE};
+
     while (isOpen()) {
         sf::Event evt{};
         while (pollEvent(evt)) {
@@ -25,9 +26,7 @@ void MyWindow::run() {
                     break;
             }
         }
-        drawBoard();
-        drawCircles();
-        drawCrosses();
+        drawContent();
         display();
     }
 }
@@ -35,10 +34,8 @@ void MyWindow::run() {
 void MyWindow::handleClick(Player &turn) {
     auto mousePos = sf::Mouse::getPosition(*this);
     std::cout << mousePos.x << " " << mousePos.y << std::endl;
-    if (cells[mousePos.x / cellLength][mousePos.y / cellLength] != Player::NONE)
-        return;
-    cells[mousePos.x / cellLength][mousePos.y / cellLength] = turn;
-    turn = turn == Player::CIRCLE ? Player::CROSS : Player::CIRCLE;
+    if (gb.at(mousePos.x / cellLength, mousePos.y / cellLength).setCells(turn))
+        turn = turn == Player::CIRCLE ? Player::CROSS : Player::CIRCLE;
 }
 
 void MyWindow::drawBoard() {
@@ -57,7 +54,8 @@ void MyWindow::drawBoard() {
     }
 }
 
-void MyWindow::drawCircles() {
+void MyWindow::drawCircle(const unsigned int x, const unsigned int y)
+{
     constexpr auto radius = cellLength / 2.f - 40;
     sf::CircleShape circle{radius};
     circle.setOrigin({radius, radius});
@@ -65,31 +63,31 @@ void MyWindow::drawCircles() {
     circle.setFillColor(sf::Color::Black);
     circle.setOutlineThickness(10);
 
-    for (auto i = 0; i < 3; i++) {
-        for (auto j = 0; j < 3; j++) {
-            if (cells[i][j] != Player::CIRCLE)
-                continue;
-            circle.setPosition({i * cellLength + cellLength / 2, j * cellLength + cellLength / 2});
-            draw(circle);
-        }
-    }
+    circle.setPosition({x * cellLength + cellLength / 2, y * cellLength + cellLength / 2});
+    draw(circle);
 }
 
-void MyWindow::drawCrosses() {
+void MyWindow::drawCross(const unsigned int x, const unsigned int y)
+{
     constexpr auto barLength = cellLength - 40;
     sf::RectangleShape bar{{10, barLength}};
     bar.setFillColor(sf::Color::White);
     bar.setOrigin(5, barLength / 2.f);
 
-    for (auto i = 0; i < 3; i++) {
-        for (auto j = 0; j < 3; j++) {
-            if (cells[i][j] != Player::CROSS)
-                continue;
-            bar.setPosition({i * cellLength + cellLength / 2, j * cellLength + cellLength / 2});
-            bar.setRotation(45);
-            draw(bar);
-            bar.setRotation(-45);
-            draw(bar);
-        }
-    }
+    bar.setPosition({x * cellLength + cellLength / 2, y * cellLength + cellLength / 2});
+    bar.setRotation(45);
+    draw(bar);
+    bar.setRotation(-45);
+    draw(bar);
+}
+
+void MyWindow::drawContent()
+{
+        drawBoard();
+	std::for_each(gb.begin(), gb.end(), [this](const Cell &cell) {
+		if (cell.getCell() == Player::CIRCLE)
+			drawCircle(cell.x, cell.y);
+		else if (cell.getCell() == Player::CROSS)
+			drawCross(cell.x, cell.y);
+	});
 }
