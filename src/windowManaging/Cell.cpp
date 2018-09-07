@@ -10,7 +10,7 @@ Cell::Cell() : x(index % 3), y(index / 3) {
 	index++;
 }
 
-bool Cell::setCells(Player val) {
+bool Cell::setCell(Player val) {
 	if (p != Player::NONE)
 		return false;
 	p = val;

@@ -11,7 +11,7 @@
 
 class GameBoard {
 public:
-	GameBoard() noexcept;
+	GameBoard() = default;
 
 	std::array<Cell, 9>::const_iterator begin() const;
 	std::array<Cell, 9>::const_iterator end() const;

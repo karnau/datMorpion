@@ -34,7 +34,7 @@ void MyWindow::run() {
 void MyWindow::handleClick(Player &turn) {
     auto mousePos = sf::Mouse::getPosition(*this);
     std::cout << mousePos.x << " " << mousePos.y << std::endl;
-    if (gb.at(mousePos.x / cellLength, mousePos.y / cellLength).setCells(turn))
+    if (gb.at(mousePos.x / cellLength, mousePos.y / cellLength).setCell(turn))
         turn = turn == Player::CIRCLE ? Player::CROSS : Player::CIRCLE;
 }
 

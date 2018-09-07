@@ -15,7 +15,7 @@ public:
 	const unsigned int y;
 
 	Player getCell() const;
-	bool setCells(Player p);
+	bool setCell(Player p);
 
 private:
 	static unsigned int index;

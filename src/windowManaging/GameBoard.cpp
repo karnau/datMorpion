@@ -3,10 +3,8 @@
 //
 
 #include <algorithm>
+#include <ctgmath>
 #include "GameBoard.hpp"
-
-GameBoard::GameBoard() noexcept {
-}
 
 std::array<Cell, 9>::const_iterator GameBoard::begin() const {
 	return cells.begin();
@@ -26,5 +24,5 @@ std::array<Cell, 9>::iterator GameBoard::end() {
 
 Cell &GameBoard::at(float x, float y)
 {
-	return cells.at(static_cast<unsigned long>(x + y * 3));
+	return cells.at(static_cast<unsigned int>(std::trunc(x) + std::trunc(y) * 3));
 }
